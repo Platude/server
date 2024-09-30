@@ -1,4 +1,4 @@
-package com.mvnh.db
+package com.mvnh.database
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Transaction

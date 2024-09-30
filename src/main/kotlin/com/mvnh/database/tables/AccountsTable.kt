@@ -1,4 +1,4 @@
-package com.mvnh.db.tables
+package com.mvnh.database.tables
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 

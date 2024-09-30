@@ -1,6 +1,6 @@
-package com.mvnh.db.dao
+package com.mvnh.database.dao
 
-import com.mvnh.db.tables.AccountsTable
+import com.mvnh.database.tables.AccountsTable
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

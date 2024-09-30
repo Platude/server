@@ -3,8 +3,6 @@ info:
   title: Platude
   description: Platude educational platform API documentation
   version: 1.0.0
-servers:
-  - url: 'https'
 tags:
   - name: Authorization
     description: Authorization endpoints

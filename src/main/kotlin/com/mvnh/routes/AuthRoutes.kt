@@ -1,6 +1,6 @@
 package com.mvnh.routes
 
-import com.mvnh.db.repositories.AuthRepository
+import com.mvnh.database.repositories.AuthRepository
 import com.mvnh.dto.AccountCredentials
 import com.mvnh.dto.ApiResponse
 import io.ktor.http.HttpStatusCode

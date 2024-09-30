@@ -1,4 +1,4 @@
-package com.mvnh.db.repositories
+package com.mvnh.database.repositories
 
 import com.mvnh.dto.AccountCredentials
 import com.mvnh.dto.AuthToken

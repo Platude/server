@@ -1,9 +1,9 @@
-package com.mvnh.db.repositories.impl
+package com.mvnh.database.repositories.impl
 
-import com.mvnh.db.dao.AccountDAO
-import com.mvnh.db.repositories.AuthRepository
-import com.mvnh.db.suspendTransaction
-import com.mvnh.db.tables.AccountsTable
+import com.mvnh.database.dao.AccountDAO
+import com.mvnh.database.repositories.AuthRepository
+import com.mvnh.database.suspendTransaction
+import com.mvnh.database.tables.AccountsTable
 import com.mvnh.dto.AccountCredentials
 import com.mvnh.dto.AuthToken
 import com.mvnh.utils.JWTConfig.generateAccessToken
