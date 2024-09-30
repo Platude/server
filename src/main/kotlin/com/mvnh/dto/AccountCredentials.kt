@@ -1,0 +1,9 @@
+package com.mvnh.dto
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class AccountCredentials(
+    val username: String,
+    val password: String
+)

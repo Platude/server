@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Platude
+  description: Platude educational platform API documentation
+  version: 1.0.0
+servers:
+  - url: 'https'
+tags:
+  - name: Authorization
+    description: Authorization endpoints
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authorization
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCredentials'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterUserCreated'
+        '400':
+            description: Invalid request
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RegisterUserBadRequest'
+  /auth/login:
+    post:
+      tags:
+        - Authorization
+      summary: Login a user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCredentials'
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginUserOk'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginUserBadRequest'
+
+components:
+  schemas:
+    AccountCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    RegisterUserCreated:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+    RegisterUserBadRequest:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+    LoginUserOk:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+    LoginUserBadRequest:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
