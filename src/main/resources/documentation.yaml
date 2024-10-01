@@ -25,13 +25,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserCreated'
+                $ref: '#/components/schemas/StatusAndMessage'
         '400':
             description: Invalid request
             content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/RegisterUserBadRequest'
+                    $ref: '#/components/schemas/StatusAndMessage'
   /auth/login:
     post:
       tags:
@@ -50,13 +50,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginUserOk'
+                $ref: '#/components/schemas/TokensResponse'
         '400':
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginUserBadRequest'
+                $ref: '#/components/schemas/StatusAndMessage'
+  /auth/refresh:
+    post:
+      tags:
+        - Authorization
+      summary: Refresh access token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: Tokens refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokensResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusAndMessage'
 
 components:
   schemas:
@@ -70,7 +100,7 @@ components:
       required:
         - username
         - password
-    RegisterUserCreated:
+    StatusAndMessage:
       type: object
       properties:
         success:
@@ -79,30 +109,14 @@ components:
           type: string
       required:
         - success
-    RegisterUserBadRequest:
+        - message
+    TokensResponse:
       type: object
       properties:
-        success:
-          type: boolean
-        message:
+        access_token:
+          type: string
+        refresh_token:
           type: string
       required:
-        - success
-    LoginUserOk:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-      required:
-        - success
-    LoginUserBadRequest:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-      required:
-        - success
+        - access_token
+        - refresh_token

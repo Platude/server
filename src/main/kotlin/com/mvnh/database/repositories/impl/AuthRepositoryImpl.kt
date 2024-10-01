@@ -6,8 +6,10 @@ import com.mvnh.database.suspendTransaction
 import com.mvnh.database.tables.AccountsTable
 import com.mvnh.dto.AccountCredentials
 import com.mvnh.dto.AuthToken
+import com.mvnh.utils.JWTConfig
 import com.mvnh.utils.JWTConfig.generateAccessToken
 import com.mvnh.utils.JWTConfig.generateRefreshToken
+import com.mvnh.utils.JWTConfig.verifyToken
 import org.jetbrains.exposed.sql.update
 import org.mindrot.jbcrypt.BCrypt
 
@@ -43,7 +45,6 @@ class AuthRepositoryImpl : AuthRepository {
             AccountsTable.update({ AccountsTable.username eq credentials.username }) {
                 it[refreshToken] = newRefreshToken
             }
-
             newRefreshToken
         }
 
@@ -53,8 +54,30 @@ class AuthRepositoryImpl : AuthRepository {
         )
     }
 
-    override suspend fun refresh(refreshToken: String): AuthToken {
-        return AuthToken("", "")
+    override suspend fun refresh(oldRefreshToken: String): AuthToken = suspendTransaction {
+        val account = AccountDAO.find {
+            AccountsTable.refreshToken eq oldRefreshToken
+        }.firstOrNull()
+        require(account != null) { "Invalid refresh token" }
+
+        val accountRefreshToken = verifyToken(oldRefreshToken, JWTConfig.refreshAlgorithm)
+        require(
+            accountRefreshToken
+                .getClaim("username")
+                .asString() == account.username
+        ) { "Invalid refresh token" }
+        require(accountRefreshToken.expiresAt.time > System.currentTimeMillis()) { "Refresh token expired" }
+
+        val newAccessToken = generateAccessToken(account.username)
+        val newRefreshToken = generateRefreshToken(account.username)
+        AccountsTable.update({ AccountsTable.username eq account.username }) {
+            it[refreshToken] = newRefreshToken
+        }
+
+        AuthToken(
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken
+        )
     }
 
     override suspend fun logout(refreshToken: String): Boolean {

@@ -17,7 +17,7 @@ object JWTConfig {
     private const val REFRESH_TOKEN_VALIDITY = 60 * 24 * 60 * 60 * 1000L // 60 days
 
     val algorithm: Algorithm = Algorithm.HMAC256(SECRET)
-    private val refreshAlgorithm: Algorithm = Algorithm.HMAC256(REFRESH_SECRET)
+    val refreshAlgorithm: Algorithm = Algorithm.HMAC256(REFRESH_SECRET)
 
     fun generateAccessToken(username: String): String = JWT.create()
         .withAudience(AUDIENCE)

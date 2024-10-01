@@ -44,5 +44,22 @@ fun Route.authRoutes(repository: AuthRepository) {
                 )
             }
         }
+
+        post("/refresh") {
+            val request = call.receive<Map<String, String>>()
+
+            try {
+                val oldRefreshToken = request["refreshToken"] ?: throw IllegalArgumentException("Refresh token not provided")
+                val tokens = repository.refresh(oldRefreshToken)
+                call.respond(HttpStatusCode.OK, tokens)
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.BadRequest,
+                    ApiResponse(
+                        success = false,
+                        message = e.message
+                    )
+                )
+            }
+        }
     }
 }
