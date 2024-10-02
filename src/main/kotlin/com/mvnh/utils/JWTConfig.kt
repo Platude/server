@@ -19,19 +19,17 @@ object JWTConfig {
     val algorithm: Algorithm = Algorithm.HMAC256(SECRET)
     val refreshAlgorithm: Algorithm = Algorithm.HMAC256(REFRESH_SECRET)
 
-    fun generateAccessToken(username: String): String = JWT.create()
-        .withAudience(AUDIENCE)
-        .withIssuer(ISSUER)
-        .withClaim("username", username)
-        .withExpiresAt(Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
-        .sign(algorithm)
+    fun generateToken(username: String, isAccessToken: Boolean): String {
+        val validity = if (isAccessToken) ACCESS_TOKEN_VALIDITY else REFRESH_TOKEN_VALIDITY
+        val algorithmToUse = if (isAccessToken) algorithm else refreshAlgorithm
 
-    fun generateRefreshToken(username: String): String = JWT.create()
-        .withAudience(AUDIENCE)
-        .withIssuer(ISSUER)
-        .withClaim("username", username)
-        .withExpiresAt(Date(System.currentTimeMillis() + REFRESH_TOKEN_VALIDITY))
-        .sign(refreshAlgorithm)
+        return JWT.create()
+            .withAudience(AUDIENCE)
+            .withIssuer(ISSUER)
+            .withClaim("username", username)
+            .withExpiresAt(Date(System.currentTimeMillis() + validity))
+            .sign(algorithmToUse)
+    }
 
     fun verifyToken(token: String, algorithm: Algorithm): DecodedJWT = JWT.require(algorithm)
         .withAudience(AUDIENCE)

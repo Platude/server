@@ -7,8 +7,7 @@ import com.mvnh.database.tables.AccountsTable
 import com.mvnh.dto.AccountCredentials
 import com.mvnh.dto.AuthToken
 import com.mvnh.utils.JWTConfig
-import com.mvnh.utils.JWTConfig.generateAccessToken
-import com.mvnh.utils.JWTConfig.generateRefreshToken
+import com.mvnh.utils.JWTConfig.generateToken
 import com.mvnh.utils.JWTConfig.verifyToken
 import org.jetbrains.exposed.sql.update
 import org.mindrot.jbcrypt.BCrypt
@@ -44,9 +43,9 @@ class AuthRepositoryImpl : AuthRepository {
         require(account != null) { "Account not found" }
         require(BCrypt.checkpw(credentials.password, account.password)) { "Invalid password" }
 
-        val accessTokenToGrant = generateAccessToken(credentials.username)
+        val accessTokenToGrant = generateToken(credentials.username, isAccessToken = true)
         val refreshTokenToGrant = account.refreshToken ?: run {
-            val newRefreshToken = generateRefreshToken(credentials.username)
+            val newRefreshToken = generateToken(credentials.username, isAccessToken = false)
             suspendTransaction {
                 AccountsTable.update({ AccountsTable.username eq credentials.username }) {
                     it[refreshToken] = newRefreshToken
@@ -55,7 +54,7 @@ class AuthRepositoryImpl : AuthRepository {
             newRefreshToken
         }
 
-        return AuthToken( //
+        return AuthToken(
             accessToken = accessTokenToGrant,
             refreshToken = refreshTokenToGrant
         )
@@ -77,8 +76,8 @@ class AuthRepositoryImpl : AuthRepository {
         ) { "Invalid refresh token" }
         require(accountRefreshToken.expiresAt.time > System.currentTimeMillis()) { "Refresh token expired" }
 
-        val newAccessToken = generateAccessToken(account.username)
-        val newRefreshToken = generateRefreshToken(account.username)
+        val newAccessToken = generateToken(account.username, isAccessToken = true)
+        val newRefreshToken = generateToken(account.username, isAccessToken = false)
 
         suspendTransaction {
             AccountsTable.update({ AccountsTable.username eq account.username }) {
