@@ -87,6 +87,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatusAndMessage'
+  /auth/logout:
+    post:
+      tags:
+        - Authorization
+      summary: Logout a user
+      operationId: logoutUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: User logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusAndMessage'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusAndMessage'
 
 components:
   schemas:

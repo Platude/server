@@ -55,7 +55,7 @@ class AuthRepositoryImpl : AuthRepository {
             newRefreshToken
         }
 
-        return AuthToken(
+        return AuthToken( //
             accessToken = accessTokenToGrant,
             refreshToken = refreshTokenToGrant
         )
@@ -93,6 +93,20 @@ class AuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun logout(refreshToken: String): Boolean {
-        return false
+        val account = suspendTransaction {
+            AccountDAO.find {
+                AccountsTable.refreshToken eq refreshToken
+            }.firstOrNull()
+        }
+
+        require(account != null) { "Invalid refresh token" }
+
+        suspendTransaction {
+            AccountsTable.update({ AccountsTable.username eq account.username }) {
+                it[this.refreshToken] = null
+            }
+        }
+
+        return true
     }
 }
