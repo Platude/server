@@ -60,15 +60,15 @@ class AuthRepositoryImpl : AuthRepository {
         )
     }
 
-    override suspend fun refresh(oldRefreshToken: String): AuthToken {
+    override suspend fun refresh(refreshToken: String): AuthToken {
         val account = suspendTransaction {
             AccountDAO.find {
-                AccountsTable.refreshToken eq oldRefreshToken
+                AccountsTable.refreshToken eq refreshToken
             }.firstOrNull()
         }
         require(account != null) { "Invalid refresh token" }
 
-        val accountRefreshToken = verifyToken(oldRefreshToken, JWTConfig.refreshAlgorithm)
+        val accountRefreshToken = verifyToken(refreshToken, JWTConfig.refreshAlgorithm)
         require(
             accountRefreshToken
                 .getClaim("username")
@@ -81,7 +81,7 @@ class AuthRepositoryImpl : AuthRepository {
 
         suspendTransaction {
             AccountsTable.update({ AccountsTable.username eq account.username }) {
-                it[refreshToken] = newRefreshToken
+                it[this.refreshToken] = newRefreshToken
             }
         }
 
