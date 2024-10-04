@@ -74,7 +74,15 @@ class AuthRepositoryImpl : AuthRepository {
                 .getClaim("username")
                 .asString() == account.username
         ) { "Invalid refresh token" }
-        require(accountRefreshToken.expiresAt.time > System.currentTimeMillis()) { "Refresh token expired" }
+        require(accountRefreshToken.expiresAt.time > System.currentTimeMillis()) {
+            suspendTransaction {
+                AccountsTable.update({ AccountsTable.username eq account.username }) {
+                    it[this.refreshToken] = null
+                }
+            }
+
+            "Refresh token expired, please login again"
+        }
 
         val newAccessToken = generateToken(account.username, isAccessToken = true)
         val newRefreshToken = generateToken(account.username, isAccessToken = false)
