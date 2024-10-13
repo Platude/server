@@ -1,6 +1,6 @@
 package com.mvnh.plugins
 
-import com.mvnh.database.tables.AccountsTable
+import com.mvnh.database.tables.UsersTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,6 +13,6 @@ fun configureDatabases() {
     )
 
     transaction {
-        SchemaUtils.create(AccountsTable)
+        SchemaUtils.create(UsersTable)
     }
 }

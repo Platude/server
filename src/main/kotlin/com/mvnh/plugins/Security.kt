@@ -1,10 +1,10 @@
 package com.mvnh.plugins
 
 import com.auth0.jwt.JWT
-import com.mvnh.utils.JWTConfig.AUDIENCE
-import com.mvnh.utils.JWTConfig.ISSUER
-import com.mvnh.utils.JWTConfig.REALM
-import com.mvnh.utils.JWTConfig.algorithm
+import com.mvnh.utils.JwtConfig.AUDIENCE
+import com.mvnh.utils.JwtConfig.ISSUER
+import com.mvnh.utils.JwtConfig.REALM
+import com.mvnh.utils.JwtConfig.algorithm
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication

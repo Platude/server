@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import java.util.*
 
-object JWTConfig {
+object JwtConfig {
     private val SECRET: String = System.getenv("JWT_SECRET") ?: throw IllegalStateException("JWT_SECRET environment variable not set")
     private val REFRESH_SECRET: String = System.getenv("JWT_REFRESH_SECRET") ?: throw IllegalStateException("JWT_REFRESH_SECRET environment variable not set")
 
