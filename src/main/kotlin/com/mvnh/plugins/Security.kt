@@ -1,16 +1,16 @@
 package com.mvnh.plugins
 
 import com.auth0.jwt.JWT
-import com.mvnh.utils.JwtConfig.AUDIENCE
-import com.mvnh.utils.JwtConfig.ISSUER
-import com.mvnh.utils.JwtConfig.REALM
-import com.mvnh.utils.JwtConfig.algorithm
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.Application
-import io.ktor.server.auth.authentication
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.response.respond
+import com.mvnh.auth.utils.JwtConfig.AUDIENCE
+import com.mvnh.auth.utils.JwtConfig.ISSUER
+import com.mvnh.auth.utils.JwtConfig.REALM
+import com.mvnh.auth.utils.JwtConfig.algorithm
+import com.mvnh.dto.BasicApiResponse
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.response.*
 
 fun Application.configureSecurity() {
     authentication {
@@ -24,10 +24,16 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-                if (credential.payload.audience.contains(AUDIENCE)) JWTPrincipal(credential.payload) else null
+                if (credential.payload.audience.contains(AUDIENCE) &&
+                    credential.payload.issuer == ISSUER &&
+                    credential.payload.expiresAt.time > System.currentTimeMillis()) {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
             }
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or expired")
+                call.respond(HttpStatusCode.Unauthorized, BasicApiResponse(success = false, message = "Token is invalid or expired"))
             }
         }
     }

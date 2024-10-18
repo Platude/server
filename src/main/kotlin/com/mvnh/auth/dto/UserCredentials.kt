@@ -1,4 +1,4 @@
-package com.mvnh.dto
+package com.mvnh.auth.dto
 
 import kotlinx.serialization.Serializable
 

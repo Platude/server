@@ -1,4 +1,4 @@
-package com.mvnh.utils
+package com.mvnh.auth.utils
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -19,19 +19,36 @@ object JwtConfig {
     val algorithm: Algorithm = Algorithm.HMAC256(SECRET)
     val refreshAlgorithm: Algorithm = Algorithm.HMAC256(REFRESH_SECRET)
 
-    fun generateToken(username: String, isAccessToken: Boolean): String {
+    fun generateToken(
+        userId: String,
+        username: String,
+        roleId: Int,
+        isAccessToken: Boolean
+    ): String {
         val validity = if (isAccessToken) ACCESS_TOKEN_VALIDITY else REFRESH_TOKEN_VALIDITY
         val algorithmToUse = if (isAccessToken) algorithm else refreshAlgorithm
 
         return JWT.create()
             .withAudience(AUDIENCE)
             .withIssuer(ISSUER)
+            .withClaim("user_id", userId)
             .withClaim("username", username)
+            .withClaim("role_id", roleId)
             .withExpiresAt(Date(System.currentTimeMillis() + validity))
             .sign(algorithmToUse)
     }
 
-    fun verifyToken(token: String, algorithm: Algorithm): DecodedJWT = JWT.require(algorithm)
+    fun generateTemporaryToken(inviteCode: String): String = JWT.create()
+        .withAudience(AUDIENCE)
+        .withIssuer(ISSUER)
+        .withClaim("invite_code", inviteCode)
+        .withExpiresAt(Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
+        .sign(algorithm)
+
+    fun verifyToken(
+        token: String,
+        algorithm: Algorithm
+    ): DecodedJWT = JWT.require(algorithm)
         .withAudience(AUDIENCE)
         .withIssuer(ISSUER)
         .build()
