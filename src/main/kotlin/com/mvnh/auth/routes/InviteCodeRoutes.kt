@@ -4,6 +4,7 @@ import com.mvnh.auth.dao.UserRoleDao
 import com.mvnh.auth.dto.InviteCodeGenerationRequest
 import com.mvnh.auth.dto.InviteCodeRequest
 import com.mvnh.auth.repositories.InviteCodeRepository
+import com.mvnh.dto.BasicApiResponse
 import com.mvnh.utils.handleRequest
 import com.mvnh.utils.suspendTransaction
 import io.ktor.http.*
@@ -29,7 +30,14 @@ fun Route.inviteCodeRoutes(repository: InviteCodeRepository) {
                     require(suspendTransaction { UserRoleDao.findById(roleToGrant) } != null) { "Invalid role" }
 
                     val inviteCode = repository.generateInviteCode(roleToGrant, adminId)
-                    call.respond(HttpStatusCode.Created, mapOf("inviteCode" to inviteCode))
+                    call.respond(
+                        HttpStatusCode.Created,
+                        BasicApiResponse(
+                            success = true,
+                            message = "Invite code generated successfully",
+                            data = mapOf("inviteCode" to inviteCode)
+                        )
+                    )
                 }
             }
         }
@@ -40,7 +48,14 @@ fun Route.inviteCodeRoutes(repository: InviteCodeRepository) {
 
             handleRequest(call) {
                 val temporaryToken = repository.redeemInviteCode(code)
-                call.respond(HttpStatusCode.OK, mapOf("temporaryToken" to temporaryToken))
+                call.respond(
+                    HttpStatusCode.OK,
+                    BasicApiResponse(
+                        success = true,
+                        message = "Invite code redeemed successfully",
+                        data = mapOf("temporaryToken" to temporaryToken)
+                    )
+                )
             }
         }
     }

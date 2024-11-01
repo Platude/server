@@ -33,7 +33,14 @@ fun Application.configureSecurity() {
                 }
             }
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, BasicApiResponse(success = false, message = "Token is invalid or expired"))
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    BasicApiResponse(
+                        success = false,
+                        message = "Token is invalid or expired",
+                        data = null
+                    )
+                )
             }
         }
     }

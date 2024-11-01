@@ -13,7 +13,8 @@ suspend fun handleRequest(call: ApplicationCall, block: suspend () -> Unit) {
             HttpStatusCode.BadRequest,
             BasicApiResponse(
                 success = false,
-                message = e.message
+                message = e.message,
+                data = null
             )
         )
     }
