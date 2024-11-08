@@ -20,7 +20,7 @@ fun Route.authRoutes(repository: AuthRepository) {
                 val token = call.request.headers["Authorization"]?.removePrefix("Bearer ")
 
                 handleRequest(call) {
-                    require(token != null) { "Missing or invalid JWT token" }
+                    require(token != null) { "Missing or invalid  token" }
 
                     repository.register(token, credentials)
                     call.respond(

@@ -9,9 +9,9 @@ object JwtConfig {
     private val SECRET: String = System.getenv("JWT_SECRET") ?: throw IllegalStateException("JWT_SECRET environment variable not set")
     private val REFRESH_SECRET: String = System.getenv("JWT_REFRESH_SECRET") ?: throw IllegalStateException("JWT_REFRESH_SECRET environment variable not set")
 
-    const val ISSUER = "https://platude.com/auth"
-    const val AUDIENCE = "https://platude.com"
-    const val REALM = "Platude"
+    const val ISSUER = "https://asysted.com/auth"
+    const val AUDIENCE = "https://asysted.com"
+    const val REALM = "Asysted"
 
     private const val ACCESS_TOKEN_VALIDITY = 60 * 60 * 1000L // 1 hour
     private const val REFRESH_TOKEN_VALIDITY = 60 * 24 * 60 * 60 * 1000L // 60 days

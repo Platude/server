@@ -27,7 +27,7 @@ class InviteCodeRepositoryImpl : InviteCodeRepository {
     override suspend fun redeemInviteCode(inviteCode: String): String = suspendTransaction {
         val code = InviteCodeDao.findById(UUID.fromString(inviteCode))
 
-        requireNotNull(code) { "Invalid invite code" }
+        requireNotNull(code) { "Invalid credentials" }
         require(code.usedBy == null) { "Invite code already used" }
 
         val temporaryToken = generateTemporaryToken(inviteCode)

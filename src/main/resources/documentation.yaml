@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Platude
-  description: Platude educational platform API documentation
+  title: Asysted
+  description: Asysted educational platform API documentation
   version: 1.0.0
 tags:
   - name: Authorization

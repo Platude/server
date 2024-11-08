@@ -25,9 +25,9 @@ fun Route.inviteCodeRoutes(repository: InviteCodeRepository) {
                     val adminToken = call.principal<JWTPrincipal>()!!.payload
                     val adminId = adminToken.getClaim("user_id").asString()
 
-                    requireNotNull(adminId) { "Invalid admin ID" }
+                    requireNotNull(adminId) { "Invalid credentials" }
                     require(adminToken.getClaim("role_id").asInt() >= 3) { "Insufficient permissions" }
-                    require(suspendTransaction { UserRoleDao.findById(roleToGrant) } != null) { "Invalid role" }
+                    require(suspendTransaction { UserRoleDao.findById(roleToGrant) } != null) { "Invalid credentials" }
 
                     val inviteCode = repository.generateInviteCode(roleToGrant, adminId)
                     call.respond(

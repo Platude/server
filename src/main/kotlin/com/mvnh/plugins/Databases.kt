@@ -13,7 +13,7 @@ import org.mindrot.jbcrypt.BCrypt
 
 fun configureDatabases() {
     Database.connect(
-        url = "jdbc:postgresql://localhost:5432/platude",
+        url = "jdbc:postgresql://localhost:5432/asysted",
         user = System.getenv("POSTGRES_USER") ?: throw IllegalStateException("POSTGRES_USER environment variable not set"),
         password = System.getenv("POSTGRES_PASSWORD") ?: throw IllegalStateException("POSTGRES_PASSWORD environment variable not set"),
     )
@@ -51,10 +51,10 @@ fun configureDatabases() {
             }
         }
 
-        if (UserDao.find { UsersTable.username eq "platude" }.empty()) {
+        if (UserDao.find { UsersTable.username eq "asysted228" }.empty()) {
             UserDao.new {
-                username = "platude"
-                password = BCrypt.hashpw("platude", BCrypt.gensalt())
+                username = "asysted228"
+                password = BCrypt.hashpw("asysted228", BCrypt.gensalt())
                 role = UserRoleDao.find { UserRolesTable.name eq "ROLE_OWNER" }.first().id
             }
         }

@@ -51,7 +51,7 @@ class AuthRepositoryImpl : AuthRepository {
         val account = UserDao.find { UsersTable.username eq credentials.username }.firstOrNull()
 
         requireNotNull(account) { "Account not found" }
-        require(BCrypt.checkpw(credentials.password, account.password)) { "Invalid password" }
+        require(BCrypt.checkpw(credentials.password, account.password)) { "Invalid credentials" }
 
         val accessTokenToGrant = generateToken(
             userId = account.userId.toString(),
@@ -82,7 +82,7 @@ class AuthRepositoryImpl : AuthRepository {
     override suspend fun refresh(oldRefreshToken: String): Map<String, String> = suspendTransaction {
         val account = UserDao.find { UsersTable.refreshToken eq oldRefreshToken }.firstOrNull()
 
-        requireNotNull(account) { "Invalid refresh token" }
+        requireNotNull(account) { "Invalid credentials" }
 
         val accountRefreshToken = verifyToken(oldRefreshToken, JwtConfig.refreshAlgorithm)
 
@@ -90,7 +90,7 @@ class AuthRepositoryImpl : AuthRepository {
             accountRefreshToken
                 .getClaim("username")
                 .asString() == account.username
-        ) { "Invalid refresh token" }
+        ) { "Invalid credentials" }
         require(accountRefreshToken.expiresAt.time > System.currentTimeMillis()) {
             account.refreshToken = null
 //            account.flush()
@@ -123,7 +123,7 @@ class AuthRepositoryImpl : AuthRepository {
     override suspend fun logout(refreshToken: String): Boolean = suspendTransaction {
         val account = UserDao.find { UsersTable.refreshToken eq refreshToken }.firstOrNull()
 
-        requireNotNull(account) { "Invalid refresh token" }
+        requireNotNull(account) { "Invalid credentials" }
 
         account.refreshToken = null
 //        account.flush()
